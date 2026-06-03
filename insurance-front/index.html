@@ -1,50 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-
-<head>
+<html lang="">
+  <head>
     <meta charset="UTF-8">
-    <title>投保申請列表</title>
-</head>
-
-<body>
-    <h1>投保申請列表</h1>
-
-    <button onclick="location.href='add.html'">新增投保申請</button>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>申請編號</th>
-                <th>要保人</th>
-                <th>商品代碼</th>
-                <th>保額</th>
-                <th>狀態</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-    </table>
-
-    <script>
-        // 頁面載入時呼叫 API
-        fetch('http://localhost:8080/api/policy-application/list')
-            .then(res => res.json())
-            .then(result => {
-                // result.data 是陣列
-                const tableBody = document.getElementById('tableBody');
-                // 提示：用 forEach 把每筆資料加到 tableBody
-                result.data.forEach(item => {
-                    const row = tableBody.insertRow();
-                    row.insertCell(0).textContent = item.applicationId;   // 申請編號
-                    row.insertCell(1).textContent = item.applicantName;   // 要保人
-                    row.insertCell(2).textContent = item.productCode;     // 商品代碼
-                    row.insertCell(3).textContent = item.sumInsured;      // 保額
-                    row.insertCell(4).textContent = item.applicationStatus; // 狀態
-                    row.insertCell(5).innerHTML = `<button onclick="location.href='edit.html?id=${item.applicationId}'">編輯</button>`; // 操作
-                });
-            });
-    </script>
-</body>
-
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>
