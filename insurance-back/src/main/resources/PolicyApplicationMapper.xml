@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.insurance.mapper.PolicyApplicationMapper">
+
+    <!-- resultMap 對應欄位 -->
+    <resultMap id="policyResultMap" type="com.insurance.entity.PolicyApplication">
+        <id column="application_id" property="applicationId" />
+        <result column="national_id" property="nationalId" />
+        <result column="applicant_name" property="applicantName" />
+        <result column="applicant_gender" property="applicantGender" />
+        <result column="applicant_birthdate" property="applicantBirthdate" />
+        <result column="relationship_to_insured" property="relationshipToInsured" />
+        <result column="product_code" property="productCode" />
+        <result column="sum_insured" property="sumInsured" />
+        <result column="annual_premium" property="annualPremium" />
+        <result column="contact_phone" property="contactPhone" />
+        <result column="application_status" property="applicationStatus" />
+        <result column="submission_time" property="submissionTime" />
+        <result column="created_by" property="createdBy" />
+        <result column="review_time" property="reviewTime" />
+        <result column="reviewed_by" property="reviewedBy" />
+        <result column="rejection_reason" property="rejectionReason" />
+    </resultMap>
+    <insert id="insertApplication" useGeneratedKeys="true" keyProperty="applicationId"> INSERT INTO
+        policy_application (national_id, applicant_name, applicant_gender, applicant_birthdate,
+        relationship_to_insured, product_code, sum_insured, annual_premium, contact_phone,
+        application_status, submission_time, created_by) VALUES (#{nationalId}, #{applicantName},
+        #{applicantGender}, #{applicantBirthdate}, #{relationshipToInsured}, #{productCode},
+        #{sumInsured}, #{annualPremium}, #{contactPhone}, #{applicationStatus}, #{submissionTime},
+        #{createdBy}) </insert>
+
+    <update id="updateApplicationStatus"> UPDATE policy_application SET application_status =
+        #{applicationStatus}, review_time = #{reviewTime}, reviewed_by = #{reviewedBy},
+        rejection_reason = #{rejectionReason} WHERE application_id = #{applicationId} </update>
+</mapper>

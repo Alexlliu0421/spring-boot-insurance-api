@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: insurance-demo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/insurance_db
+    username: root
+    password: 1qaz2wsx
+
+mybatis-plus:
+  mapper-locations: classpath:/PolicyApplicationMapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+security:
+  jwt:
+    # JWT 簽名密鑰，用來產生和驗證 token，不寫死在程式碼裡較安全
+    secret: insurance-secret-key-must-be-long-enough-32chars
+    # token 有效時間（秒），86400 = 24小時
+    expiration-seconds: 86400
