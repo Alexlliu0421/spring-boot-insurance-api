@@ -7,6 +7,7 @@ import com.insurance.mapper.PolicyApplicationMapper;
 import com.insurance.service.PolicyApplicationService;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,13 +28,16 @@ public class PolicyApplicationServiceImpl
     @Autowired // 注入 InsuredPersonMapper，用來刪除關聯的被保險人資料
     private InsuredPersonMapper insuredPersonMapper;
 
+    // 提示：加在 @Override 上面
+    // 確保兩個刪除操作是一個交易
+    // 一起成功 或 一起失敗（例如刪 insured_person 成功但刪 policy_application 失敗 → 全部回滾）
     @Override
+    @Transactional
+    // @Transactional → 確保兩個刪除操作是一個交易，任一步驟拋出例外 → 全部回滾
     public boolean removeById(Serializable id) {
-        // Serializable → 覆寫父類別 ServiceImpl 的方法簽名，String/Integer 都實作了此介面
-        // policy_application 和 insured_person 有外鍵關聯
-        // 1. 先刪除 insured_person 的關聯資料，避免違反外鍵約束
+        // 1. 先刪 insured_person，避免違反外鍵約束
         insuredPersonMapper.deleteById(id);
-        // 2. 再刪除 policy_application，呼叫父類別的 removeById
+        // 2. 再刪 policy_application，呼叫父類別的 removeById
         return super.removeById(id);
     }
 
@@ -75,7 +79,7 @@ public class PolicyApplicationServiceImpl
         policyApplication.setReviewTime(LocalDateTime.now());
         // 提示：呼叫 baseMapper.updateApplicationStatus()
         baseMapper.updateApplicationStatus(policyApplication);
-        
+
     }
 
 }

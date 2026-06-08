@@ -65,6 +65,9 @@ router.beforeEach((to) => {
         return { path: '/login' }
     }
     // 其他情況（不需要登入 或 已經登入）→ 直接放行
+    if(to.path === '/login' && authStore.isAuthenticated) {
+        return { path: '/dashboard' }
+    }
 })
 
 

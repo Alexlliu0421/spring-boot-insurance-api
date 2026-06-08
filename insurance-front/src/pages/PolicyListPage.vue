@@ -9,6 +9,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { http } from '../services/http'
+import { getList } from '@/services/policyService'
 
 const policies = ref<any[]>([])
 
@@ -21,9 +22,16 @@ const columns = [
 ]
 //Quasar 的 q-table 自動產生表格和分頁，只要傳入 rows 和 columns 就好！
 
-onMounted(() => {
-    http.get('/api/policy-application/list')
-        .then(response => policies.value = response.data.data)
+onMounted(async () => {
+    // onMounted → Vue 生命週期鉤子，頁面載入完成後執行
+    // async → 讓裡面可以使用 await
+    const response = await getList()
+    // await 等待後端回應後才繼續執行
+    // getList() → policyService.ts 的函數，只負責發請求回傳 Promise
+    policies.value = response.data.data
+    // response.data → ApiResponse
+    // response.data.data → 真正的資料陣列
+    // 存進 policies，q-table 偵測到變化自動更新畫面
 })
 //頁面一載入就自動呼叫 API 取資料，存進 policies，q-table 偵測到資料變了就自動更新畫面！
 </script>

@@ -20,36 +20,36 @@
 import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { http } from '../services/http'
 
+import { login as loginApi } from '../services/authService'
 const authStore = useAuthStore()
 const router = useRouter()
 
 const account = ref('')
 const password = ref('')
-
 async function login() {
+    // async/await 寫法：讓非同步程式碼讀起來像同步，比 .then() 巢狀更清楚
+    try {
+        // await 等待後端回應後才繼續執行，不需要 .then() 串接
+        const response = await loginApi(account.value, password.value)
+        // loginApi → authService.ts 的函數，只負責發請求回傳 Promise
 
-    // 提示：呼叫 POST /api/auth/login
-    http.post('/api/auth/login', { account: account.value, password: password.value })
-        //// 發出 POST 請求到後端 AuthController 的 /api/auth/login
-        // { account, password } → 對應後端 LoginReqDTO 的欄位
-        .then(response => {
-            if (response.data.code !== 200) {
-                alert('登入失敗，請檢查帳號密碼')
-                return
-            }
-            const token = response.data.data
-            authStore.login(token)
-            router.push('/dashboard')
-        })
-        .catch(error => {
-            console.error('登入失敗:', error)
+        if (response.data.code !== 200) {
+            // response.data → ApiResponse，code 不是 200 代表帳密錯誤
             alert('登入失敗，請檢查帳號密碼')
-        })
-
-
+            return // 提前結束，不繼續執行
+        }
+        const token = response.data.data // token 在 ApiResponse 的 data 欄位
+        authStore.login(token)           // 存進 Pinia store 和 localStorage
+        router.push('/dashboard')        // 導向 Dashboard
+    } catch (error) {
+        // try/catch 取代 .catch()，攔截網路錯誤等例外情況
+        console.error('登入失敗:', error)
+        alert('登入失敗，請檢查帳號密碼')
+    }
 }
+
+
 </script>
 
 <style scoped></style>
